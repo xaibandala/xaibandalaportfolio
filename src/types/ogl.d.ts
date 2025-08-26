@@ -7,10 +7,10 @@ declare module "ogl" {
     render(options: { scene: unknown; camera?: unknown; target?: unknown; clear?: boolean }): void;
   }
   export class Program {
-    uniforms: Record<string, unknown>;
+    uniforms: Record<string, { value: unknown }>;
     constructor(
       gl: WebGLRenderingContext | WebGL2RenderingContext,
-      options: { vertex: string; fragment: string; uniforms?: Record<string, unknown> }
+      options: { vertex: string; fragment: string; uniforms?: Record<string, { value: unknown }> }
     );
   }
   export class Mesh {

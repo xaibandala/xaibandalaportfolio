@@ -139,7 +139,7 @@ const Threads: React.FC<ThreadsProps> = ({
   ...rest
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationFrameId = useRef<number>();
+  const animationFrameId = useRef<number | null>(null);
 
   useLayoutEffect(() => {
     if (!containerRef.current) return;
