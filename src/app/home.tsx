@@ -1,9 +1,11 @@
+"use client";
 import SplitText from "../components/SplitText";
 import AnimatedContent from "./AnimatedContent";
 import Image from "next/image";
 import Threads from "../components/Threads";
 import ResponsiveNav from "../components/ResponsiveNav";
 import ClickSpark from "../components/ClickSpark";
+import { motion } from "framer-motion";
 
  
 
@@ -206,41 +208,47 @@ export default function Home() {
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-4 w-full">
               {/* TODO: Replace the href values with your actual profile links */}
-              <a
+              <motion.a
                 href="https://github.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
                 title="GitHub"
                 className="group px-5 py-2 rounded-md bg-white text-black font-medium hover:bg-white/90 transition-colors inline-flex items-center justify-center motion-safe:transform transition-transform duration-200 ease-out hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 motion-safe:transition-transform duration-200 ease-out group-hover:-translate-y-0.5">
                   <path d="M12 2C6.477 2 2 6.486 2 12.021c0 4.424 2.865 8.177 6.839 9.504.5.094.682-.217.682-.483 0-.237-.009-.866-.013-1.7-2.782.605-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.465-1.11-1.465-.908-.62.069-.607.069-.607 1.004.071 1.532 1.034 1.532 1.034.892 1.53 2.341 1.088 2.91.833.091-.648.35-1.088.636-1.338-2.221-.253-4.555-1.114-4.555-4.957 0-1.095.39-1.992 1.03-2.693-.103-.253-.447-1.27.098-2.646 0 0 .84-.27 2.75 1.028A9.564 9.564 0  0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.298 2.748-1.028 2.748-1.028.546 1.376.202 2.393.1 2.646.64.701 1.028 1.598 1.028 2.693 0 3.852-2.338 4.701-4.566 4.949.359.31.679.922.679 1.859 0 1.34-.012 2.42-.012 2.747 0 .268.18.58.688.481A9.525 9.525 0 0 0 22 12.021C22 6.486 17.523 2 12 2z" />
                 </svg>
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="https://www.linkedin.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
                 title="LinkedIn"
                 className="group px-5 py-2 rounded-md border border-white/30 text-white hover:bg-white/10 transition-colors inline-flex items-center justify-center motion-safe:transform transition-transform duration-200 ease-out hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 motion-safe:transition-transform duration-200 ease-out group-hover:-translate-y-0.5">
                   <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.5h4V23h-4V8.5zM8.5 8.5h3.8v2h.05c.53-1 1.82-2.05 3.75-2.05 4.01 0  4.75 2.64 4.75 6.07V23h-4v-6.6c0-1.58-.03-3.62-2.2-3.62-2.2 0-2.54 1.72-2.54 3.5V23h-4V8.5z" />
                 </svg>
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="mailto:example@gmail.com"
                 aria-label="Gmail"
                 title="Gmail"
                 className="group px-5 py-2 rounded-md border border-white/30 text-white hover:bg-white/10 transition-colors inline-flex items-center justify-center motion-safe:transform transition-transform duration-200 ease-out hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 motion-safe:transition-transform duration-200 ease-out group-hover:-translate-y-0.5">
                   <path d="M12 13.065 1.5 5.25v12.75A1.5 1.5 0 0 0 3 19.5h18a1.5 1.5 0 0 0 1.5-1.5V5.25L12 13.065z" />
                   <path d="M21.75 4.5H2.25l9.75 7.5 9.75-7.5z" />
                 </svg>
-              </a>
+              </motion.a>
               </div>
               </div>
               {/* Close hero content container */}

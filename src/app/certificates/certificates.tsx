@@ -1,9 +1,11 @@
+"use client";
 import Image from "next/image";
 import ClickSpark from "../../components/ClickSpark";
 import SplitText from "../../components/SplitText";
 import AnimatedContent from "../AnimatedContent";
 import ResponsiveNav from "../../components/ResponsiveNav";
 import Threads from "../../components/Threads";
+import { motion } from "framer-motion";
 
 
 // Certificates catalog (replace placeholders with real data)
@@ -100,7 +102,12 @@ export default function CertificatesPage() {
                     delay={i * 0.08}
                     threshold={0.2}
                   >
-                    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_10px_50px_-12px_rgba(0,0,0,0.7)]">
+                    <motion.div
+                      className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_10px_50px_-12px_rgba(0,0,0,0.7)]"
+                      whileHover={{ y: -4 }}
+                      whileTap={{ scale: 0.99 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                    >
                       {/* Glow gradient */}
                       <div
                         className={`pointer-events-none absolute -inset-1 rounded-3xl bg-gradient-to-br ${c.accent} opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100`}
@@ -127,12 +134,14 @@ export default function CertificatesPage() {
                           {c.issuer} • {c.year}
                         </p>
                         <div className="mt-5">
-                          <a
+                          <motion.a
                             href={c.url}
                             target={c.url?.startsWith("http") ? "_blank" : undefined}
                             rel={c.url?.startsWith("http") ? "noopener noreferrer" : undefined}
                             className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-2 text-xs font-medium text-white/90 transition-colors hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
                             aria-label={`View or verify certificate: ${c.title}`}
+                            whileHover={{ y: -1 }}
+                            whileTap={{ scale: 0.97 }}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -146,10 +155,10 @@ export default function CertificatesPage() {
                               <circle cx="12" cy="12" r="9" />
                             </svg>
                             <span>Verify</span>
-                          </a>
+                          </motion.a>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   </AnimatedContent>
                 ))}
               </div>

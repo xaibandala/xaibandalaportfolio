@@ -1,8 +1,10 @@
+"use client";
 import ClickSpark from "../../components/ClickSpark";
 import SplitText from "../../components/SplitText";
 import AnimatedContent from "../AnimatedContent";
 import ResponsiveNav from "../../components/ResponsiveNav";
 import Threads from "../../components/Threads";
+import { motion } from "framer-motion";
 
 export default function ContactsPage() {
   return (
@@ -59,39 +61,45 @@ export default function ContactsPage() {
                   <div>
                     <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white/90">Connect with Me</h2>
                     <div className="mt-4 flex items-center gap-5 text-white">
-                      <a
+                      <motion.a
                         href="https://github.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center h-9 w-9 rounded-md bg-white/5 hover:bg-white/10 ring-1 ring-white/10 hover:ring-white/20 transition-colors"
                         aria-label="GitHub"
                         title="GitHub"
+                        whileHover={{ y: -1 }}
+                        whileTap={{ scale: 0.97 }}
                       >
                         {/* GitHub icon */}
                         <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.486 2 12.02c0 4.427 2.865 8.18 6.839 9.504.5.094.682-.217.682-.483 0-.238-.009-.868-.014-1.704-2.782.605-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.465-1.11-1.465-.908-.62.069-.608.069-.608 1.004.071 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.833.091-.647.35-1.088.636-1.339-2.22-.253-4.555-1.112-4.555-4.949 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.269 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.851.004 1.707.115 2.507.337 1.909-1.295 2.748-1.026 2.748-1.026.545 1.378.202 2.397.1 2.65.64.7 1.027 1.595 1.027 2.688 0 3.846-2.339 4.694-4.566 4.943.359.31.679.92.679 1.855 0 1.339-.012 2.419-.012 2.75 0 .269.18.58.688.481A10.02 10.02 0 0 0 22 12.02C22 6.486 17.523 2 12 2Z" clipRule="evenodd"/></svg>
-                      </a>
-                      <a
+                      </motion.a>
+                      <motion.a
                         href="https://www.linkedin.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center h-9 w-9 rounded-md bg-white/5 hover:bg-white/10 ring-1 ring-white/10 hover:ring-white/20 transition-colors"
                         aria-label="LinkedIn"
                         title="LinkedIn"
+                        whileHover={{ y: -1 }}
+                        whileTap={{ scale: 0.97 }}
                       >
                         {/* LinkedIn icon */}
                         <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8h4V23h-4V8zm7.5 0h3.83v2.05h.05c.53-1 1.84-2.05 3.79-2.05 4.05 0 4.8 2.67 4.8 6.14V23h-4v-6.67c0-1.59-.03-3.63-2.21-3.63-2.22 0-2.56 1.73-2.56 3.52V23h-4V8z"/></svg>
-                      </a>
-                      <a
+                      </motion.a>
+                      <motion.a
                         href="https://medium.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center h-9 w-9 rounded-md bg-white/5 hover:bg-white/10 ring-1 ring-white/10 hover:ring-white/20 transition-colors"
                         aria-label="Medium"
                         title="Medium"
+                        whileHover={{ y: -1 }}
+                        whileTap={{ scale: 0.97 }}
                       >
                         {/* Medium icon */}
                         <svg viewBox="0 0 1043.63 592.71" fill="currentColor" className="h-5 w-5"><path d="M588.67 296.35c0 163.7-131.54 296.35-293.84 296.35S1 460.05 1 296.35 132.54 0 294.83 0s293.84 132.64 293.84 296.35ZM712.02 296.35c0 154.45-65.76 279.73-146.86 279.73S418.3 450.8 418.3 296.35 484.06 16.62 565.16 16.62s146.86 125.28 146.86 279.73Zm329.61 0c0 143.14-29.43 259.13-65.73 259.13s-65.73-116-65.73-259.13S939.61 37.22 975.9 37.22s65.73 116 65.73 259.13Z"/></svg>
-                      </a>
+                      </motion.a>
                     </div>
                   </div>
                 </div>
@@ -141,12 +149,14 @@ export default function ContactsPage() {
                     />
                   </div>
                   <div className="pt-2">
-                    <button
+                    <motion.button
                       type="submit"
                       className="w-full md:w-auto inline-flex items-center justify-center rounded-md bg-cyan-600 hover:bg-cyan-500 active:scale-[0.99] transition-all px-6 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(0,255,255,0.15)]"
+                      whileHover={{ y: -1 }}
+                      whileTap={{ scale: 0.98 }}
                     >
                       Send Message
-                    </button>
+                    </motion.button>
                   </div>
                 </form>
               </div>

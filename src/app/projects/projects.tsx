@@ -1,3 +1,5 @@
+"use client";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import ClickSpark from "../../components/ClickSpark";
 import SplitText from "../../components/SplitText";
@@ -137,8 +139,11 @@ export default function ProjectsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
                 {projects.map((p) => (
                   <AnimatedContent key={p.title} distance={40} duration={0.7} ease="power3.out" threshold={0.15}>
-                    <div
+                    <motion.div
                       className="cursor-target group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_10px_50px_-12px_rgba(0,0,0,0.7)]"
+                      whileHover={{ y: -4 }}
+                      whileTap={{ scale: 0.99 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 24 }}
                     >
                       {/* Glow gradient */}
                       <div
@@ -182,12 +187,15 @@ export default function ProjectsPage() {
                         </div>
                         {/* Actions */}
                         <div className="mt-5 flex items-center gap-2.5">
-                          <a
+                          <motion.a
                             href={p.links.live}
                             target={p.links.live?.startsWith("http") ? "_blank" : undefined}
                             rel={p.links.live?.startsWith("http") ? "noopener noreferrer" : undefined}
                             className="cursor-target inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-2 text-xs font-medium text-white/90 transition-colors hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
                             aria-label={`Open live demo for ${p.title}`}
+                            whileHover={{ y: -1 }}
+                            whileTap={{ scale: 0.98 }}
+                            transition={{ type: "spring", stiffness: 260, damping: 20 }}
                           >
                             <span>Live</span>
                             <svg
@@ -198,13 +206,16 @@ export default function ProjectsPage() {
                             >
                               <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
-                          </a>
-                          <a
+                          </motion.a>
+                          <motion.a
                             href={p.links.code}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="cursor-target inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.02] px-3 py-2 text-xs font-medium text-white/80 transition-colors hover:bg-white/[0.05] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
                             aria-label={`View source code for ${p.title}`}
+                            whileHover={{ y: -1 }}
+                            whileTap={{ scale: 0.97 }}
+                            transition={{ type: "spring", stiffness: 260, damping: 20 }}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -218,10 +229,10 @@ export default function ProjectsPage() {
                               <path d="M8 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                             <span>Code</span>
-                          </a>
+                          </motion.a>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   </AnimatedContent>
                 ))}
               </div>

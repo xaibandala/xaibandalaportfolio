@@ -1,9 +1,11 @@
+"use client";
 import ClickSpark from "../../components/ClickSpark";
 import SplitText from "../../components/SplitText";
 import AnimatedContent from "../AnimatedContent";
 import ResponsiveNav from "../../components/ResponsiveNav";
 import Image from "next/image";
 import Threads from "../../components/Threads";
+import { motion } from "framer-motion";
 
 
 export default function AboutPage() {
@@ -43,7 +45,12 @@ export default function AboutPage() {
           {/* Circular profile image only (animated) */}
           <AnimatedContent distance={50} duration={0.7} ease="power3.out" threshold={0.22}>
             <div className="mt-10 md:mt-12 flex justify-center">
-              <div className="h-24 w-24 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full overflow-hidden ring-1 ring-white/15">
+              <motion.div
+                className="h-24 w-24 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full overflow-hidden ring-1 ring-white/15"
+                whileHover={{ scale: 1.04, rotate: 1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 350, damping: 20 }}
+              >
                 <Image
                   src="/xai.jpeg"
                   alt="Xai Bandala"
@@ -53,12 +60,16 @@ export default function AboutPage() {
                   sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, 144px"
                   className="h-full w-full object-cover"
                 />
-              </div>
+              </motion.div>
             </div>
           </AnimatedContent>
           {/* About Me Text-only Section (animated) */}
           <AnimatedContent distance={70} duration={0.8} ease="power3.out" threshold={0.2}>
-            <section className="w-full max-w-5xl mx-auto text-left mt-10 md:mt-16">
+            <motion.section
+              className="w-full max-w-5xl mx-auto text-left mt-10 md:mt-16"
+              whileHover={{ translateY: -2 }}
+              transition={{ duration: 0.2 }}
+            >
               <div className="text-white/80 leading-7 md:leading-8 text-[15px] sm:text-base md:text-[19px] space-y-5 md:space-y-6">
                 <p>
                   I’m a developer passionate about crafting performant, delightful web experiences. I enjoy working across the stack—from building
@@ -70,7 +81,7 @@ export default function AboutPage() {
                   design patterns, contributing to side projects, or experimenting with web graphics.
                 </p>
               </div>
-            </section>
+            </motion.section>
           </AnimatedContent>
         </div>
       </ClickSpark>
