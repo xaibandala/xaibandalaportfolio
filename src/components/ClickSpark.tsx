@@ -171,7 +171,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
 
   const addSparksAt = (x: number, y: number) => {
     const now = performance.now();
-    const newSparks = Array.from({ length: sparkCount }, (_, i) => ({
+    const newSparks = Array.from({ length: sparkCount }, (_: unknown, i: number) => ({
       x,
       y,
       angle: (2 * Math.PI * i) / sparkCount,
@@ -193,7 +193,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t: Touch | undefined = e.touches[0];
+    const t = e.touches.item(0);
     if (!t) return;
     addSparksAt(t.clientX - rect.left, t.clientY - rect.top);
   };

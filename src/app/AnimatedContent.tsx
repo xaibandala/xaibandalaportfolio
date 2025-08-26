@@ -48,15 +48,30 @@ const AnimatedContent: React.FC<AnimatedContentProps> = ({
     const offset = reverse ? -distance : distance;
     const startPct = (1 - threshold) * 100;
 
-    const setVars: gsap.TweenVars = {
+    type LocalScrollTriggerVars = {
+      trigger: Element | null;
+      start: string;
+      toggleActions: string;
+      once?: boolean;
+    };
+    type LocalTweenWithAxis = Partial<Record<Axis, number>> & {
+      scale?: number;
+      opacity?: number;
+      duration?: number;
+      ease?: string;
+      delay?: number;
+      onComplete?: () => void;
+      scrollTrigger?: LocalScrollTriggerVars;
+    };
+
+    const setVars: LocalTweenWithAxis = {
       scale,
       opacity: animateOpacity ? initialOpacity : 1,
+      [axis]: offset,
     };
-    // dynamic position
-    (setVars as Record<Axis, number>)[axis] = offset;
     gsap.set(el, setVars);
 
-    const toVars: gsap.TweenVars = {
+    const toVars: LocalTweenWithAxis = {
       scale: 1,
       opacity: 1,
       duration,
@@ -69,12 +84,12 @@ const AnimatedContent: React.FC<AnimatedContentProps> = ({
         toggleActions: "play none none none",
         once: true,
       },
+      [axis]: 0,
     };
-    (toVars as Record<Axis, number>)[axis] = 0;
-    const tween = gsap.to(el, toVars);
+    const tween: gsap.core.Tween = gsap.to(el, toVars);
 
     tweenRef.current = tween;
-    triggerRef.current = (tween.scrollTrigger as ScrollTrigger) ?? null;
+    triggerRef.current = tween.scrollTrigger ?? null;
 
     return () => {
       tweenRef.current?.kill();
