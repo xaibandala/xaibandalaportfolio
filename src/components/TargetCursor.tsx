@@ -165,23 +165,23 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
         const cursorCenterX = cursorRect.left + cursorRect.width / 2;
         const cursorCenterY = cursorRect.top + cursorRect.height / 2;
 
-        const [tlc, trc, brc, blc] = Array.from(cornersRef.current!);
+        const [tlc, trc, brc, blc] = Array.from(cornersRef.current!) as HTMLElement[];
 
         const { borderWidth, cornerSize, parallaxStrength } = constants;
 
-        let tlOffset = {
+        const tlOffset = {
           x: rect.left - cursorCenterX - borderWidth,
           y: rect.top - cursorCenterY - borderWidth,
         };
-        let trOffset = {
+        const trOffset = {
           x: rect.right - cursorCenterX + borderWidth - cornerSize,
           y: rect.top - cursorCenterY - borderWidth,
         };
-        let brOffset = {
+        const brOffset = {
           x: rect.right - cursorCenterX + borderWidth - cornerSize,
           y: rect.bottom - cursorCenterY + borderWidth - cornerSize,
         };
-        let blOffset = {
+        const blOffset = {
           x: rect.left - cursorCenterX - borderWidth,
           y: rect.bottom - cursorCenterY + borderWidth - cornerSize,
         };
@@ -203,15 +203,15 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
         }
 
         const tl = gsap.timeline();
-        const corners = [tlc, trc, brc, blc];
-        const offsets = [tlOffset, trOffset, brOffset, blOffset];
+        const corners: HTMLElement[] = [tlc, trc, brc, blc];
+        const offsets: Array<{ x: number; y: number }> = [tlOffset, trOffset, brOffset, blOffset];
 
         corners.forEach((corner, index) => {
           tl.to(
-            corner as any,
+            corner,
             {
-              x: (offsets[index] as any).x,
-              y: (offsets[index] as any).y,
+              x: offsets[index].x,
+              y: offsets[index].y,
               duration: 0.2,
               ease: "power2.out",
             },
@@ -255,7 +255,7 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
           const tl = gsap.timeline();
           corners.forEach((corner, index) => {
             tl.to(
-              corner as any,
+              corner as HTMLElement,
               {
                 x: positions[index].x,
                 y: positions[index].y,
@@ -301,7 +301,7 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
       target.addEventListener("mouseleave", leaveHandler as EventListener);
     };
 
-    window.addEventListener("mouseover", enterHandler as EventListener, { passive: true } as any);
+    window.addEventListener("mouseover", enterHandler as EventListener, { passive: true } as AddEventListenerOptions);
 
     return () => {
       window.removeEventListener("mousemove", moveHandler as EventListener);

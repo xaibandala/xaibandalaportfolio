@@ -1,19 +1,25 @@
 declare module "ogl" {
   export class Renderer {
     gl: (WebGLRenderingContext | WebGL2RenderingContext) & { canvas: HTMLCanvasElement };
-    constructor(options?: any);
+    constructor(options?: unknown);
     setSize(width: number, height: number): void;
-    render(options: { scene: any; camera?: any; target?: any; clear?: boolean }): void;
+    render(options: { scene: unknown; camera?: unknown; target?: unknown; clear?: boolean }): void;
   }
   export class Program {
-    uniforms: Record<string, any>;
-    constructor(gl: any, options: { vertex: string; fragment: string; uniforms?: Record<string, any> });
+    uniforms: Record<string, unknown>;
+    constructor(
+      gl: WebGLRenderingContext | WebGL2RenderingContext,
+      options: { vertex: string; fragment: string; uniforms?: Record<string, unknown> }
+    );
   }
   export class Mesh {
-    constructor(gl: any, options: { geometry: any; program: any });
+    constructor(
+      gl: WebGLRenderingContext | WebGL2RenderingContext,
+      options: { geometry: unknown; program: unknown }
+    );
   }
   export class Triangle {
-    constructor(gl: any);
+    constructor(gl: WebGLRenderingContext | WebGL2RenderingContext);
   }
   export class Color {
     r: number;
