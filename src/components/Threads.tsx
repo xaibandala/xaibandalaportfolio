@@ -5,7 +5,7 @@ import { Renderer, Program, Mesh, Triangle } from "ogl";
 
 import styles from "./Threads.module.css";
 
-interface ThreadsProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ThreadsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'> {
   color?: [number, number, number];
   amplitude?: number;
   distance?: number;
