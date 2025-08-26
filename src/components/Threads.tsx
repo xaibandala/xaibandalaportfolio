@@ -148,10 +148,8 @@ const Threads: React.FC<ThreadsProps> = ({
     const renderer = new Renderer({ alpha: true });
     const gl = renderer.gl;
     
-    // Set device pixel ratio if the property exists
-    if ('dpr' in renderer) {
-      (renderer as any).dpr = Math.min(window.devicePixelRatio || 1, 2);
-    }
+    // Set device pixel ratio
+    renderer.dpr = Math.min(window.devicePixelRatio || 1, 2);
     
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
