@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
-import { Renderer, Program, Mesh, Triangle, Vec3 } from "ogl";
+import { Renderer, Program, Mesh, Triangle } from "ogl";
 
 import styles from "./Threads.module.css";
 
@@ -147,13 +147,16 @@ const Threads: React.FC<ThreadsProps> = ({
 
     const renderer = new Renderer({ alpha: true });
     const gl = renderer.gl;
-    // Ensure consistent sharpness across devices
-    renderer.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    
+    // Set device pixel ratio if the property exists
+    if ('dpr' in renderer) {
+      (renderer as any).dpr = Math.min(window.devicePixelRatio || 1, 2);
+    }
+    
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     container.appendChild(gl.canvas);
-    // Ensure canvas is absolutely positioned and cannot create scrollbars
     gl.canvas.className = styles.canvasRoot;
 
     const geometry = new Triangle(gl);
@@ -163,16 +166,16 @@ const Threads: React.FC<ThreadsProps> = ({
       uniforms: {
         iTime: { value: 0 },
         iResolution: {
-          value: new Vec3(
+          value: [
             gl.canvas.width,
             gl.canvas.height,
             gl.canvas.width / gl.canvas.height
-          ),
+          ],
         },
-        uColor: { value: new Vec3(...color) },
+        uColor: { value: [...color] },
         uAmplitude: { value: amplitude },
         uDistance: { value: distance },
-        uMouse: { value: new Float32Array([0.5, 0.5]) },
+        uMouse: { value: [0.5, 0.5] },
       },
     });
 
@@ -180,14 +183,11 @@ const Threads: React.FC<ThreadsProps> = ({
 
     function applySize(w: number, h: number) {
       renderer.setSize(w, h);
-      if (program.uniforms.iResolution.value instanceof Vec3) {
-        program.uniforms.iResolution.value.x = w;
-        program.uniforms.iResolution.value.y = h;
-        program.uniforms.iResolution.value.z = w / Math.max(h, 1);
-      }
+      // Update resolution uniform as array
+      program.uniforms.iResolution.value = [w, h, w / Math.max(h, 1)];
     }
 
-    // Use ResizeObserver for reliable sizing of absolute container
+    // Use ResizeObserver for reliable sizing
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const cr = entry.contentRect;
@@ -196,7 +196,7 @@ const Threads: React.FC<ThreadsProps> = ({
     });
     ro.observe(container);
 
-    // Guard against zero-size on first mount; wait a frame if needed
+    // Initial size setup
     const rect = container.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
       applySize(rect.width, rect.height);
@@ -216,9 +216,11 @@ const Threads: React.FC<ThreadsProps> = ({
       const y = 1.0 - (e.clientY - rect.top) / rect.height;
       targetMouse = [x, y];
     }
+    
     function handleMouseLeave() {
       targetMouse = [0.5, 0.5];
     }
+    
     if (enableMouseInteraction) {
       container.addEventListener("mousemove", handleMouseMove);
       container.addEventListener("mouseleave", handleMouseLeave);
@@ -229,22 +231,22 @@ const Threads: React.FC<ThreadsProps> = ({
         const smoothing = 0.05;
         currentMouse[0] += smoothing * (targetMouse[0] - currentMouse[0]);
         currentMouse[1] += smoothing * (targetMouse[1] - currentMouse[1]);
-        program.uniforms.uMouse.value[0] = currentMouse[0];
-        program.uniforms.uMouse.value[1] = currentMouse[1];
+        program.uniforms.uMouse.value = [...currentMouse];
       } else {
-        program.uniforms.uMouse.value[0] = 0.5;
-        program.uniforms.uMouse.value[1] = 0.5;
+        program.uniforms.uMouse.value = [0.5, 0.5];
       }
       program.uniforms.iTime.value = t * 0.001;
 
       renderer.render({ scene: mesh });
       animationFrameId.current = requestAnimationFrame(update);
     }
+    
     animationFrameId.current = requestAnimationFrame(update);
 
     return () => {
-      if (animationFrameId.current)
+      if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
+      }
       ro.disconnect();
 
       if (enableMouseInteraction) {
@@ -252,11 +254,12 @@ const Threads: React.FC<ThreadsProps> = ({
         container.removeEventListener("mouseleave", handleMouseLeave);
       }
       
-      // Proper cleanup
-      mesh.geometry?.dispose?.();
-      program.dispose?.();
+      // Clean up WebGL resources
+      if (container.contains(gl.canvas)) {
+        container.removeChild(gl.canvas);
+      }
       
-      if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
+      // Lose WebGL context
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [color, amplitude, distance, enableMouseInteraction]);
