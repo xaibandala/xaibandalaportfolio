@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
-import { Renderer, Program, Mesh, Triangle, Color } from "ogl";
+import { Renderer, Program, Mesh, Triangle, Vec3 } from "ogl";
 
 import styles from "./Threads.module.css";
 
@@ -163,13 +163,13 @@ const Threads: React.FC<ThreadsProps> = ({
       uniforms: {
         iTime: { value: 0 },
         iResolution: {
-          value: new Color(
+          value: new Vec3(
             gl.canvas.width,
             gl.canvas.height,
             gl.canvas.width / gl.canvas.height
           ),
         },
-        uColor: { value: new Color(...color) },
+        uColor: { value: new Vec3(...color) },
         uAmplitude: { value: amplitude },
         uDistance: { value: distance },
         uMouse: { value: new Float32Array([0.5, 0.5]) },
@@ -180,9 +180,11 @@ const Threads: React.FC<ThreadsProps> = ({
 
     function applySize(w: number, h: number) {
       renderer.setSize(w, h);
-      program.uniforms.iResolution.value.r = w;
-      program.uniforms.iResolution.value.g = h;
-      program.uniforms.iResolution.value.b = w / Math.max(h, 1);
+      if (program.uniforms.iResolution.value instanceof Vec3) {
+        program.uniforms.iResolution.value.x = w;
+        program.uniforms.iResolution.value.y = h;
+        program.uniforms.iResolution.value.z = w / Math.max(h, 1);
+      }
     }
 
     // Use ResizeObserver for reliable sizing of absolute container
@@ -249,6 +251,11 @@ const Threads: React.FC<ThreadsProps> = ({
         container.removeEventListener("mousemove", handleMouseMove);
         container.removeEventListener("mouseleave", handleMouseLeave);
       }
+      
+      // Proper cleanup
+      mesh.geometry?.dispose?.();
+      program.dispose?.();
+      
       if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };

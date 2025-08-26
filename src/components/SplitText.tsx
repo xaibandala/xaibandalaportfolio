@@ -2,7 +2,6 @@
 
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
-import type { TweenVars } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 // Note: SplitText is a GSAP bonus plugin. This import works with gsap trial or Club GreenSock.
 import { SplitText as GSAPSplitText } from "gsap/SplitText";
@@ -16,8 +15,8 @@ export type SplitTextProps = {
   duration?: number;
   ease?: string;
   splitType?: "chars" | "words" | "lines";
-  from?: TweenVars;
-  to?: TweenVars;
+  from?: gsap.TweenVars;
+  to?: gsap.TweenVars;
   threshold?: number; // 0..1 viewport percentage
   rootMargin?: string; // e.g. "-100px"
   textAlign?: React.CSSProperties["textAlign"];
