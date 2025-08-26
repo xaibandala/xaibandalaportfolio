@@ -15,8 +15,8 @@ export type SplitTextProps = {
   duration?: number;
   ease?: string;
   splitType?: "chars" | "words" | "lines";
-  from?: Record<string, any>;
-  to?: Record<string, any>;
+  from?: gsap.TweenVars;
+  to?: gsap.TweenVars;
   threshold?: number; // 0..1 viewport percentage
   rootMargin?: string; // e.g. "-100px"
   textAlign?: React.CSSProperties["textAlign"];
@@ -53,10 +53,22 @@ export default function SplitText({
     const absoluteLines = splitType === "lines";
     if (absoluteLines) el.style.position = "relative";
 
-    // Use loose typing to avoid build-time type errors if GSAP SplitText typings are unavailable
-    let splitter: any;
+    // Define a minimal SplitText shape to avoid 'any'
+    type SplitTextInstance = {
+      chars?: HTMLElement[];
+      words?: HTMLElement[];
+      lines?: HTMLElement[];
+      revert: () => void;
+    };
+    type SplitTextCtor = new (
+      el: HTMLElement,
+      opts: { type: "chars" | "words" | "lines"; absolute?: boolean; linesClass?: string }
+    ) => SplitTextInstance;
+
+    let splitter: SplitTextInstance | null = null;
     try {
-      splitter = new (GSAPSplitText as any)(el, {
+      const Ctor = (GSAPSplitText as unknown as SplitTextCtor);
+      splitter = new Ctor(el, {
         type: splitType,
         absolute: absoluteLines,
         linesClass: "split-line",
@@ -69,14 +81,14 @@ export default function SplitText({
     let targets: HTMLElement[] = [];
     switch (splitType) {
       case "lines":
-        targets = (splitter as any).lines;
+        targets = splitter?.lines ?? [];
         break;
       case "words":
-        targets = (splitter as any).words;
+        targets = splitter?.words ?? [];
         break;
       case "chars":
       default:
-        targets = (splitter as any).chars;
+        targets = splitter?.chars ?? [];
     }
 
     if (!targets || targets.length === 0) {
@@ -86,7 +98,7 @@ export default function SplitText({
     }
 
     targets.forEach((t) => {
-      (t as any).style.willChange = "transform, opacity";
+      t.style.willChange = "transform, opacity";
     });
 
     const startPct = (1 - threshold) * 100;
@@ -104,8 +116,8 @@ export default function SplitText({
               start,
               toggleActions: "play none none none",
               once: true,
-              onToggle: (self: any) => {
-                scrollTriggerRef.current = self as any;
+              onToggle: (self: ScrollTrigger) => {
+                scrollTriggerRef.current = self;
               },
             },
           }
@@ -133,12 +145,10 @@ export default function SplitText({
 
     return () => {
       tl.kill();
-      if (scrollTriggerRef.current) {
-        (scrollTriggerRef.current as any).kill();
-        scrollTriggerRef.current = null;
-      }
+      scrollTriggerRef.current?.kill();
+      scrollTriggerRef.current = null;
       gsap.killTweensOf(targets);
-      if (splitter) splitter.revert();
+      splitter?.revert();
     };
   }, [
     text,

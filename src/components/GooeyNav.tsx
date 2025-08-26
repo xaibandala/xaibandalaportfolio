@@ -21,6 +21,15 @@ type GooeyNavProps = {
   initialActiveIndex?: number;
 };
 
+type Particle = {
+  start: [number, number];
+  end: [number, number];
+  time: number;
+  scale: number;
+  color: number;
+  rotate: number;
+};
+
 const GooeyNav: React.FC<GooeyNavProps> = ({
   items,
   animationTime = 600,
@@ -38,14 +47,14 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
   const router = useRouter();
 
-  const noise = (n = 1) => n / 2 - Math.random() * n;
+  const noise = (n: number = 1): number => n / 2 - Math.random() * n;
 
-  const getXY = (distance: number, pointIndex: number, totalPoints: number) => {
+  const getXY = (distance: number, pointIndex: number, totalPoints: number): [number, number] => {
     const angle = ((360 + noise(8)) / totalPoints) * pointIndex * (Math.PI / 180);
     return [distance * Math.cos(angle), distance * Math.sin(angle)];
   };
 
-  const createParticle = (i: number, t: number, d: [number, number], r: number) => {
+  const createParticle = (i: number, t: number, d: [number, number], r: number): Particle => {
     const rotate = noise(r / 10);
     return {
       start: getXY(d[0], particleCount - i, particleCount),
@@ -57,7 +66,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     };
   };
 
-  const makeParticles = (element: HTMLElement) => {
+  const makeParticles = (element: HTMLElement): void => {
     const d = particleDistances;
     const r = particleR;
     const bubbleTime = animationTime * 2 + timeVariance;
@@ -72,10 +81,10 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
         const particle = document.createElement("span");
         const point = document.createElement("span");
         particle.classList.add("particle");
-        particle.style.setProperty("--start-x", `${(p.start as number[])[0]}px`);
-        particle.style.setProperty("--start-y", `${(p.start as number[])[1]}px`);
-        particle.style.setProperty("--end-x", `${(p.end as number[])[0]}px`);
-        particle.style.setProperty("--end-y", `${(p.end as number[])[1]}px`);
+        particle.style.setProperty("--start-x", `${p.start[0]}px`);
+        particle.style.setProperty("--start-y", `${p.start[1]}px`);
+        particle.style.setProperty("--end-x", `${p.end[0]}px`);
+        particle.style.setProperty("--end-y", `${p.end[1]}px`);
         particle.style.setProperty("--time", `${p.time}ms`);
         particle.style.setProperty("--scale", `${p.scale}`);
         particle.style.setProperty("--color", `var(--color-${p.color}, white)`);
@@ -98,7 +107,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     }
   };
 
-  const updateEffectPosition = (element: HTMLElement) => {
+  const updateEffectPosition = (element: HTMLElement): void => {
     if (!containerRef.current || !filterRef.current || !textRef.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
     const pos = element.getBoundingClientRect();
@@ -114,10 +123,8 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     textRef.current.innerText = (element.innerText || "").trim();
   };
 
-  const handleClick = (e: React.MouseEvent<HTMLLIElement>, index: number) => {
-    const liEl = e.currentTarget as HTMLLIElement;
+  const activateIndex = (index: number, liEl: HTMLLIElement): void => {
     if (activeIndex === index) return;
-
     setActiveIndex(index);
     updateEffectPosition(liEl);
 
@@ -137,14 +144,16 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLAnchorElement>, index: number) => {
+  const handleClick = (e: React.MouseEvent<HTMLLIElement>, index: number): void => {
+    const liEl = e.currentTarget;
+    activateIndex(index, liEl);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLAnchorElement>, index: number): void => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      const liEl = (e.currentTarget.parentElement as HTMLLIElement) || undefined;
-      if (liEl) {
-        // synthesize click handling for keyboard
-        handleClick({ currentTarget: liEl } as unknown as React.MouseEvent<HTMLLIElement>, index);
-      }
+      const liEl = e.currentTarget.parentElement as HTMLLIElement | null;
+      if (liEl) activateIndex(index, liEl);
     }
   };
 
@@ -179,14 +188,14 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     <div className={`${styles.root} gooey-nav-container`} ref={containerRef}>
       <nav>
         <ul
-          ref={navRef as React.RefObject<HTMLUListElement>}
+          ref={navRef}
           className="flex items-center gap-8 m-0 p-0"
         >
           {items.map((item, index) => (
             <li
               key={index}
               className={`${activeIndex === index ? "active" : ""} inline-block`}
-              onClick={(e) => handleClick(e as unknown as React.MouseEvent<HTMLLIElement>, index)}
+              onClick={(e) => handleClick(e, index)}
             >
               <Link
                 href={item.href}
@@ -201,7 +210,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
                     router.prefetch(item.href);
                   } catch {}
                 }}
-                onKeyDown={(e) => handleKeyDown(e as unknown as React.KeyboardEvent<HTMLAnchorElement>, index)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
                 aria-current={activeIndex === index ? "page" : undefined}
                 className="inline-block px-3 py-2"
               >

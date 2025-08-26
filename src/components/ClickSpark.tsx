@@ -15,6 +15,13 @@ type ClickSparkProps = {
   contentSized?: boolean; // when true, container height grows with content instead of 100%
 };
 
+type Spark = {
+  x: number;
+  y: number;
+  angle: number;
+  startTime: number;
+};
+
 const ClickSpark: React.FC<ClickSparkProps> = ({
   sparkColor = "#fff",
   sparkSize = 10,
@@ -28,11 +35,8 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
   contentSized = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const sparksRef = useRef<
-    Array<{ x: number; y: number; angle: number; startTime: number }>
-  >([]);
-  const startTimeRef = useRef<number | null>(null);
-  const runningRef = useRef(false);
+  const sparksRef = useRef<Spark[]>([]);
+  const runningRef = useRef<boolean>(false);
   const animIdRef = useRef<number | null>(null);
   const startRef = useRef<() => void>(() => {});
   const stopRef = useRef<() => void>(() => {});
@@ -44,7 +48,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     const parent = canvas.parentElement;
     if (!parent) return;
 
-    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+    let resizeTimeout: number | null = null;
 
     const resizeCanvas = () => {
       const { width, height } = parent.getBoundingClientRect();
@@ -56,7 +60,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
 
     const handleResize = () => {
       if (resizeTimeout) clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(resizeCanvas, 100);
+      resizeTimeout = window.setTimeout(resizeCanvas, 100);
     };
 
     const ro = new ResizeObserver(handleResize);
@@ -94,10 +98,6 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
 
     const draw = (timestamp: number) => {
       if (!runningRef.current) return; // guard
-
-      if (!startTimeRef.current) {
-        startTimeRef.current = timestamp;
-      }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -193,7 +193,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
+    const t: Touch | undefined = e.touches[0];
     if (!t) return;
     addSparksAt(t.clientX - rect.left, t.clientY - rect.top);
   };
