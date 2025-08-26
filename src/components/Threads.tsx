@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
-import { Renderer, Program, Mesh, Triangle } from "ogl";
+import { Vec3 } from "ogl/dist/ogl.mjs";
 
 import styles from "./Threads.module.css";
 
