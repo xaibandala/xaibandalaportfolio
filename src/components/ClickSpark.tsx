@@ -44,7 +44,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     const parent = canvas.parentElement;
     if (!parent) return;
 
-    let resizeTimeout: any;
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
 
     const resizeCanvas = () => {
       const { width, height } = parent.getBoundingClientRect();
@@ -55,7 +55,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     };
 
     const handleResize = () => {
-      clearTimeout(resizeTimeout);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(resizeCanvas, 100);
     };
 
@@ -66,7 +66,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
 
     return () => {
       ro.disconnect();
-      clearTimeout(resizeTimeout);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
     };
   }, []);
 

@@ -43,18 +43,20 @@ const AnimatedContent: React.FC<AnimatedContentProps> = ({
     const el = ref.current;
     if (!el) return;
 
-    const axis = direction === "horizontal" ? "x" : "y";
+    type Axis = "x" | "y";
+    const axis: Axis = direction === "horizontal" ? "x" : "y";
     const offset = reverse ? -distance : distance;
     const startPct = (1 - threshold) * 100;
 
-    gsap.set(el, {
-      [axis]: offset,
+    const setVars: gsap.TweenVars = {
       scale,
       opacity: animateOpacity ? initialOpacity : 1,
-    } as any);
+    };
+    // dynamic position
+    (setVars as Record<Axis, number>)[axis] = offset;
+    gsap.set(el, setVars);
 
-    const tween = gsap.to(el, {
-      [axis]: 0,
+    const toVars: gsap.TweenVars = {
       scale: 1,
       opacity: 1,
       duration,
@@ -67,7 +69,9 @@ const AnimatedContent: React.FC<AnimatedContentProps> = ({
         toggleActions: "play none none none",
         once: true,
       },
-    } as any);
+    };
+    (toVars as Record<Axis, number>)[axis] = 0;
+    const tween = gsap.to(el, toVars);
 
     tweenRef.current = tween;
     triggerRef.current = (tween.scrollTrigger as ScrollTrigger) ?? null;
