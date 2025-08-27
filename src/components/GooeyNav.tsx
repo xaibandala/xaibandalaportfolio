@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "./GooeyNav.module.css"; // CSS Module with :global rules
 
@@ -131,6 +130,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     if (filterRef.current) {
       const particles = filterRef.current.querySelectorAll(".particle");
       particles.forEach((p) => filterRef.current!.removeChild(p));
+      filterRef.current.classList.remove("active");
     }
 
     if (textRef.current) {
@@ -142,12 +142,65 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     if (filterRef.current) {
       makeParticles(filterRef.current);
     }
+
+    // Clear active state after animation completes
+    setTimeout(() => {
+      if (navRef.current) {
+        const allLis = navRef.current.querySelectorAll('li');
+        allLis.forEach(li => li.classList.remove('active'));
+      }
+      if (filterRef.current) {
+        filterRef.current.classList.remove("active");
+      }
+      if (textRef.current) {
+        textRef.current.classList.remove("active");
+      }
+    }, animationTime * 2 + timeVariance + 100); // Wait for all animations to complete
   };
 
-  const handleClick = (e: React.MouseEvent<HTMLLIElement>, index: number): void => {
-    const liEl = e.currentTarget;
-    activateIndex(index, liEl);
+  const scrollToSection = (href: string): void => {
+    // If we're not on the home page, navigate there first
+    if (window.location.pathname !== '/') {
+      router.push(`/${href}`);
+      return;
+    }
+
+    // Extract section ID from href (e.g., "/about" -> "about")
+    const sectionId = href.replace('/', '');
+    
+    // Handle special cases
+    const sectionMap: Record<string, string> = {
+      'about': 'about-section',
+      'projects': 'projects-section', 
+      'certificates': 'certificates-section',
+      'contacts': 'contact-section'
+    };
+
+    const targetId = sectionMap[sectionId] || sectionId;
+    const targetElement = document.getElementById(targetId);
+    
+    if (targetElement) {
+      targetElement.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   };
+
+  // const handleClick = (e: React.MouseEvent<HTMLLIElement>, index: number): void => {
+  //   e.preventDefault();
+  //   const liEl = e.currentTarget;
+  //   const item = items[index];
+  //   
+  //   activateIndex(index, liEl);
+  //   
+  //   // Handle Home navigation normally, others scroll to sections
+  //   if (item.href === '/') {
+  //     router.push('/');
+  //   } else {
+  //     scrollToSection(item.href);
+  //   }
+  // };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLAnchorElement>, index: number): void => {
     if (e.key === "Enter" || e.key === " ") {
@@ -195,27 +248,29 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
             <li
               key={index}
               className={`${activeIndex === index ? "active" : ""} inline-block`}
-              onClick={(e) => handleClick(e, index)}
             >
-              <Link
+              <a
                 href={item.href}
-                prefetch
-                onMouseEnter={() => {
-                  try {
-                    router.prefetch(item.href);
-                  } catch {}
-                }}
-                onFocus={() => {
-                  try {
-                    router.prefetch(item.href);
-                  } catch {}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const liEl = e.currentTarget.parentElement as HTMLLIElement;
+                  const item = items[index];
+                  
+                  activateIndex(index, liEl);
+                  
+                  // Handle Home navigation normally, others scroll to sections
+                  if (item.href === '/') {
+                    router.push('/');
+                  } else {
+                    scrollToSection(item.href);
+                  }
                 }}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 aria-current={activeIndex === index ? "page" : undefined}
-                className="inline-block px-3 py-2"
+                className="inline-block px-3 py-2 cursor-pointer"
               >
                 {item.label}
-              </Link>
+              </a>
             </li>
           ))}
         </ul>

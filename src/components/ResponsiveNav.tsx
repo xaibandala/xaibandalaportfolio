@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import GooeyNav from "./GooeyNav";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export type NavItem = { label: string; href: string };
@@ -17,6 +16,35 @@ export default function ResponsiveNav({ items, initialActiveIndex = 0, className
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
+
+  const scrollToSection = (href: string): void => {
+    // If we're not on the home page, navigate there first
+    if (window.location.pathname !== '/') {
+      router.push(`/${href}`);
+      return;
+    }
+
+    // Extract section ID from href (e.g., "/about" -> "about")
+    const sectionId = href.replace('/', '');
+    
+    // Handle special cases
+    const sectionMap: Record<string, string> = {
+      'about': 'about-section',
+      'projects': 'projects-section', 
+      'certificates': 'certificates-section',
+      'contacts': 'contact-section'
+    };
+
+    const targetId = sectionMap[sectionId] || sectionId;
+    const targetElement = document.getElementById(targetId);
+    
+    if (targetElement) {
+      targetElement.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
 
   // Prefetch all routes on mount for snappier transitions
   useEffect(() => {
@@ -95,26 +123,25 @@ export default function ResponsiveNav({ items, initialActiveIndex = 0, className
           >
             <nav className="py-2">
               {items.map((it) => (
-                <Link
+                <a
                   key={it.href}
                   href={it.href}
-                  prefetch
-                  className="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10"
+                  className="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 cursor-pointer"
                   role="menuitem"
-                  onMouseEnter={() => {
-                    try {
-                      router.prefetch(it.href);
-                    } catch {}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpen(false);
+                    
+                    // Handle Home navigation normally, others scroll to sections
+                    if (it.href === '/') {
+                      router.push('/');
+                    } else {
+                      scrollToSection(it.href);
+                    }
                   }}
-                  onFocus={() => {
-                    try {
-                      router.prefetch(it.href);
-                    } catch {}
-                  }}
-                  onClick={() => setOpen(false)}
                 >
                   {it.label}
-                </Link>
+                </a>
               ))}
             </nav>
           </div>
