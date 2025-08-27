@@ -1,12 +1,13 @@
 {
-    "routes" : [
-        {
-            "src" : "/" , 
-            "dest" : "/"
-        },
-        {
-            "src" : "/test" ,
-            "dest" : "/"
-        } 
-    ]
-}
+    "version": 2,
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/next"
+      }
+    ],
+    "framework": "nextjs",
+    "buildCommand": "npm run build",
+    "outputDirectory": ".next"
+  }
+  
